@@ -1,11 +1,15 @@
 [submodule "external/pybind11"]
 	path = external/pybind11
-	url = ../../pybind/pybind11
+	url = https://github.com/pybind/pybind11
 	branch = stable
 [submodule "external/googletest"]
 	path = external/googletest
-	url = ../../google/googletest/
+	url = https://github.com/google/googletest
 	branch = v1.10.x
 [submodule "external/fmt"]
 	path = external/fmt
-	url = git@github.com:fmtlib/fmt
+	url = https://github.com/fmtlib/fmt
+[submodule "external/clutchlog"]
+	path = external/clutchlog
+	url = https://github.com/nojhan/clutchlog
+

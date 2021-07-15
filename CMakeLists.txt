@@ -48,7 +48,8 @@ add_library(ioh::ioh ALIAS ioh)
 add_subdirectory(${EXTERNAL_DIR}/fmt)
 target_link_libraries(ioh INTERFACE fmt::fmt-header-only)
 
-
+# Include external clutchlog lib
+include_directories(${EXTERNAL_DIR}/clutchlog)
 
 # Add Python Library
 if(ENABLE_PYTHON_PROBLEMS)

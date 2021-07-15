@@ -78,7 +78,9 @@ TEST(problems, pbo)
 
 TEST(problem_suite, bbob)
 {
-    ioh::common::log::log_level = ioh::common::log::Level::Warning;
+    auto& ioh_dbg = clutchlog::logger();
+    ioh_dbg.threshold(clutchlog::level::xdebug);
+
     std::vector<int> ids(24);
     std::iota(ids.begin(), ids.end(), 1);
     ioh::suite::BBOB bbob(ids, {1}, {4});

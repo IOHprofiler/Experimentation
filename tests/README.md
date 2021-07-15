@@ -10,6 +10,7 @@ We are using [Google Test](https://github.com/google/googletest) framework, plea
 
 ### ecdf
 * Testing the logger maintains data correctly and the `sum` function returns expected result.
+* Statistics produces logical results.
 
 ### experiment
 * Testing `configuration` acquires correct info from *.ini files.

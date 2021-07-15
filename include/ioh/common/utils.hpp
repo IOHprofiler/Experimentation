@@ -38,6 +38,8 @@ namespace ioh
     {
         /**
          * \brief Enum containing minimization = 0 and maximization = 1 flags
+         * 
+         * @todo FIXME this should really be a class with two instances holding comparison operators, so as to avoid tests.
          */
         enum class OptimizationType
         {
@@ -102,11 +104,15 @@ namespace ioh
         bool compare_vector(const std::vector<T> &v1,
                             const std::vector<T> &v2)
         {
+#ifndef NDEBUG
             size_t n = v1.size();
-            if (n != v2.size())
-                log::error("Two compared vectors must be with the same size\n");
+            if (n != v2.size()) {
+                IOH_DBG(error,"Two compared vectors must have the same size: " << n << " != " << v2.size());
+                assert(n == v2.size());
+            }
+#endif
 
-            for (size_t i = 0; i != n; ++i)
+            for (size_t i = 0; i != v1.size(); ++i)
                 if (v1[i] != v2[i])
                     return false;
             return true;
@@ -118,7 +124,7 @@ namespace ioh
          * \param v1 The first value
          * \param v2 The second value
          * \param optimization_type Used to determine which value is better,
-         * when optimization_type == \ref OptimizationType::minimization lower elements are better,
+         * when optimization_type == \ref common::OptimizationType::Minimization lower elements are better,
          * otherwise higher elements are better.
          * \return true if v1 is better than v2
          */
@@ -137,21 +143,23 @@ namespace ioh
          * \param v1 The first vector
          * \param v2 The second vector
          * \param optimization_type Used to determine which vector is better,
-         * when optimization_type == \ref OptimizationType::minimization lower elements are better,
+         * when optimization_type == \ref common::OptimizationType::Minimization lower elements are better,
          * otherwise higher elements are better.
-         * \return Return true all of vl's elements are better than v2's.
+         * \return Return true all of v1's elements are better than v2's.
          */
         template <typename T>
         bool compare_objectives(const std::vector<T> &v1,
                                 const std::vector<T> &v2,
                                 const OptimizationType optimization_type)
         {
+#ifndef NDEBUG
             auto n = v1.size();
-            if (n != v2.size())
-                log::error(
-                    "Two compared objective vector must be with the same size\n");
-
-            for (size_t i = 0; i != n; ++i)
+            if (n != v2.size()) {
+                IOH_DBG(error, "Two compared objective vector must have the same size: " << n << " != " << v2.size());
+                assert(n == v2.size());
+            }
+#endif
+            for (size_t i = 0; i != v1.size(); ++i)
                 if (!compare_objectives<T>(v1[i], v2[i], optimization_type))
                     return false;
             return true;
@@ -257,9 +265,10 @@ namespace ioh
 
             input = strip(input);
             for (auto &e : input)
-                if (e != ',' && e != '-' && !isdigit(e))
-                    log::error(
-                        "The configuration consists of invalid characters.");
+                if (e != ',' && e != '-' && !isdigit(e)) {
+                    IOH_DBG(error, "The configuration consists of invalid characters: " << e);
+                    assert(e == ',' or e == '-' or isdigit(e));
+                }
 
             std::stringstream raw(input);
             while (getline(raw, tmp, ','))
@@ -271,18 +280,24 @@ namespace ioh
                 if (s.at(i).at(0) == '-')
                 {
                     /// The condition beginning with "-m"
-                    if (i != 0)
-                        log::error("Format error in configuration.");
+                    if (i != 0) {
+                        IOH_DBG(error,"Format error in configuration: " << i);
+                        assert(i==0);
+                    }
                     else
                     {
                         tmp = s.at(i).substr(1);
-                        if (tmp.find('-') != std::string::npos)
-                            log::error("Format error in configuration.");
+                        if (tmp.find('-') != std::string::npos) {
+                            IOH_DBG(error, "Format error in configuration, '-' not found.");
+                            assert(tmp.find('-') == std::string::npos);
+                        }
 
                         tmp_value = std::stoi(tmp);
 
-                        if (tmp_value < min)
-                            log::error("Input value exceeds lower bound.");
+                        if (tmp_value < min) {
+                            IOH_DBG(error,"Input value: " << tmp_value << " exceeds lower bound: " << min);
+                            assert(tmp_value >= min);
+                        }
 
                         for (auto value = min; value <= tmp_value; ++value)
                             result.push_back(value);
@@ -292,16 +307,21 @@ namespace ioh
                 {
                     /// The condition endding with "n-"
 
-                    if (i != n - 1)
-                        log::error("Format error in configuration.");
+                    if (i != n - 1) {
+                        IOH_DBG(error,"Format error in configuration.");
+                        assert( i == n-1);
+                    }
                     else
                     {
                         tmp = s[i].substr(0, s[i].length() - 1);
-                        if (tmp.find('-') != std::string::npos)
-                            log::error("Format error in configuration.");
+                        if (tmp.find('-') != std::string::npos) {
+                            IOH_DBG(error,"Format error in configuration, '-' not found.");
+                        }
                         tmp_value = std::stoi(tmp);
-                        if (tmp_value > max)
-                            log::error("Input value exceeds upper bound.");
+                        if (tmp_value > max) {
+                            IOH_DBG(error,"Input value: " << tmp_value << " exceeds upper bound: " << max);
+                            assert(tmp_value <= max);
+                        }
                         for (auto value = max; value <= tmp_value; --value)
                             result.push_back(value);
                     }
@@ -315,12 +335,18 @@ namespace ioh
                         tmp_vector.push_back(tmp);
                     tmp_value = std::stoi(tmp_vector[0]);
                     tmp_value2 = std::stoi(tmp_vector[tmp_vector.size() - 1]);
-                    if (tmp_value > tmp_value2)
-                        log::error("Format error in configuration.");
-                    if (tmp_value < min)
-                        log::error("Input value exceeds lower bound.");
-                    if (tmp_value2 > max)
-                        log::error("Input value exceeds upper bound.");
+                    if (tmp_value > tmp_value2) {
+                        IOH_DBG(error,"Format error in configuration.");
+                        assert(tmp_value <= tmp_value2);
+                    }
+                    if (tmp_value < min) {
+                        IOH_DBG(error,"Input value exceeds lower bound.");
+                        assert(tmp_value >= min);
+                    }
+                    if (tmp_value2 > max) {
+                        IOH_DBG(error,"Input value exceeds upper bound.");
+                        assert(tmp_value2 <= max);
+                    }
                     for (auto value = tmp_value; value <= tmp_value2; ++value)
                         result.push_back(value);
                 }
@@ -422,7 +448,7 @@ namespace ioh
                 const auto iterate = data_.find(nice(section));
                 if (iterate != data_.end())
                     return iterate->second;
-                log::warning("Cannot find section: " + section);
+                IOH_DBG(warning,"Cannot find section: " << section);
                 return std::unordered_map<std::string, std::string>();
             }
 
@@ -442,7 +468,7 @@ namespace ioh
                 if (iterate != map.end())
                     return iterate->second;
 
-                std::cout << "Cannot find key: " << section << std::endl;
+                IOH_DBG(error, "Cannot find key: " << section);
                 return nullptr;
             }
 
@@ -525,7 +551,7 @@ namespace ioh
              */
             ~CpuTimer()
             {
-                log::info(fmt::format(
+                IOH_DBG(progress,fmt::format(
                     "{}CPU Time: {:d} ms", info_msg_,
                     std::chrono::duration_cast<std::chrono::microseconds>(Clock::now() - start_time_).count()));
             }

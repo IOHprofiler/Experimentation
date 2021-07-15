@@ -10,7 +10,9 @@
 
 TEST(BBOBfitness, dimension5)
 {
-    ioh::common::log::log_level = ioh::common::log::Level::Warning;
+    auto& ioh_dbg = clutchlog::logger();
+    ioh_dbg.threshold(clutchlog::level::xdebug);
+
     const auto file_name = find_test_file("bbobfitness5.in");
     std::string s;
 
@@ -34,7 +36,9 @@ TEST(BBOBfitness, dimension5)
 
 TEST(BBOBfitness, dimension20)
 {
-    ioh::common::log::log_level = ioh::common::log::Level::Warning;
+    auto& ioh_dbg = clutchlog::logger();
+    ioh_dbg.threshold(clutchlog::level::xdebug);
+
     const auto file_name = find_test_file("bbobfitness20.in");
     std::string s;
 

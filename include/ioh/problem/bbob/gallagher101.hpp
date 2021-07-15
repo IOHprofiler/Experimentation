@@ -105,12 +105,12 @@ namespace ioh::problem::bbob
 
             if (result > 0)
             {
-                result = log(result) / a;
+                result = std::log(result) / a;
                 result = pow(exp(result + 0.49 * (sin(result) + sin(0.79 * result))), a);
             }
             else if (result < 0)
             {
-                result = log(-result) / a;
+                result = std::log(-result) / a;
                 result = -pow(exp(result + 0.49 * (sin(0.55 * result) + sin(0.31 * result))), a);
             }
 

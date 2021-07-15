@@ -10,7 +10,9 @@ function(register_test test_name test_sources)
     add_executable(${test_name} ${test_sources} cpp/utils.hpp cpp/entrypoint.cpp)
     target_include_directories(${test_name} PRIVATE cpp)
     target_link_libraries(${test_name} PRIVATE ${PROJECT_NAME} gtest)
-    gtest_discover_tests(${test_name})
+
+    # When testing with ctest, only show messages up to the Warning.
+    gtest_discover_tests(${test_name} EXTRA_ARGS "Warning")
 endfunction()
 
 # Add all tests in single executable

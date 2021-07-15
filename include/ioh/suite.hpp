@@ -84,13 +84,15 @@ namespace ioh::suite
         std::vector<int> problem_ids_;
         std::vector<int> instances_;
         std::vector<int> dimensions_;
-        logger::Base *logger_{};
+        Logger *logger_{};
 
         [[nodiscard]]
         int check_parameter(const int parameter, const int ub, const int lb = 1) const
         {
-            if (parameter < lb || parameter > ub)
-                common::log::error("Parameter value " + std::to_string(parameter) + " is out of bounds");
+            if (parameter < lb || parameter > ub) {
+                IOH_DBG(error,"Parameter value " << parameter << " is out of bounds");
+                assert(lb <= parameter and parameter <= ub);
+            }
             return parameter;
         }
 
@@ -120,21 +122,21 @@ namespace ioh::suite
         void reset()
         {
             if (logger_ != nullptr)
-                logger_->flush();
+                logger_->reset();
             for (auto &problem : problems_)
                 problem.reset();
         }
 
-        void attach_logger(logger::Base &logger)
+        void attach_logger(Logger &logger)
         {
             logger_ = &logger;
-            logger_->track_suite(name());
+            logger_->attach_suite(name());
         }
 
         void detach_logger()
         {
             if (logger_ != nullptr)
-                logger_->flush();
+                logger_->reset();
             logger_ = nullptr;
         }
 

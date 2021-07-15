@@ -194,9 +194,10 @@ namespace ioh
                         || sscanf(line.c_str(), "%[^=] = '%[^\']", key, value) == 2
                         || sscanf(line.c_str(), "%[^=] = %[^;#]", key, value) == 2)
                         data_.set(section, key, value);
-                    else
-                        common::log::error(
-                            "Error in parsing .ini file on line:\n" + line);
+                    else {
+                        IOH_DBG(error, "Error in parsing .ini file on line: " << line);
+                        assert(false);
+                    }
                 }
             }
 

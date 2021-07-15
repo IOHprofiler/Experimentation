@@ -21,7 +21,8 @@ namespace ioh
 
                     if (floor(sqrt(double_n)) != sqrt(double_n))
                     {
-                        common::log::error("Number of parameters in the Ising square problem must be a square number");
+                        IOH_DBG(error,"Number of parameters in the Ising square problem must be a square number");
+                        assert(floor(sqrt(double_n)) == sqrt(double_n));
                     }
 
                     for (auto i = 0; i < lattice_size; ++i)

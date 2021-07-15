@@ -42,13 +42,17 @@ namespace ioh {
 
                 suite_ = suite::SuiteRegistry<ProblemType>::instance().create(suite_name, problems, instances, dimensions);
                     
-                if (suite_ == nullptr)
-                    common::log::error("Creating suite fails, please check your Configuration");
+                if (suite_ == nullptr) {
+                    IOH_DBG(error,"Creating suite fails, please check your Configuration");
+                    assert(suite_ != nullptr);
+                }
 
                 logger_ = std::make_shared<logger::Default>(conf_);
 
-                if (logger_ == nullptr)
-                    common::log::error("Creating logger fails, please check your Configuration");
+                if (logger_ == nullptr) {
+                    IOH_DBG(error,"Creating logger fails, please check your Configuration");
+                    assert(logger_ != nullptr);
+                }
 
             }
 
@@ -60,7 +64,7 @@ namespace ioh {
              * \param independent_runs the number of repetitions default = 1
              */
             Experimenter(std::shared_ptr<suite::Suite<ProblemType>> suite,
-                         std::shared_ptr<logger::Base> logger,
+                         std::shared_ptr<Logger> logger,
                          Algorithm algorithm = nullptr,
                          const int independent_runs = 1
                 )
@@ -90,7 +94,7 @@ namespace ioh {
                         // std::cout << "." << std::flush;
                     }
                 }
-                logger_->flush();
+                //logger_->flush();
             }
 
             /**
@@ -120,7 +124,7 @@ namespace ioh {
              * \brief Get method for \ref csv_logger_
              * \return Private \ref csv_logger_
              */
-            [[nodiscard]] std::shared_ptr<logger::Base> logger() const {
+            [[nodiscard]] std::shared_ptr<Logger> logger() const {
                 return logger_;
             }
 
@@ -152,7 +156,7 @@ namespace ioh {
             /**
              * \brief A pointer to the logger. 
              */
-            std::shared_ptr<logger::Base> logger_;
+            std::shared_ptr<Logger> logger_;
 
             /**
              * \brief A function pointer of type \ref algorithm_type

@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+
 #include "ioh.hpp"
 
 
@@ -16,15 +17,14 @@ TEST(common, test)
  
 TEST(common, log)
 {
-	using namespace ioh::common::log;
-	testing::internal::CaptureStdout();
-	info("Hello");
-	auto output = testing::internal::GetCapturedStdout();
-	EXPECT_EQ(output, "IOH_LOG_INFO : Hello\n");
-	testing::internal::CaptureStdout();
-	warning("Warning");
-	output = testing::internal::GetCapturedStdout();
-	EXPECT_EQ(output, "IOH_WARNING_INFO : Warning\n");
+    auto& ioh_dbg = clutchlog::logger();
+    ioh_dbg.threshold(clutchlog::level::xdebug);
+
+	testing::internal::CaptureStderr();
+	ioh_dbg.format("{msg}");
+	IOH_DBG(info,"Hello");
+	auto output = testing::internal::GetCapturedStderr();
+    EXPECT_EQ(output, "Hello\x1B[0m"); // Hello + color reset ANSI code
 }
 
 TEST(common, typenames)

@@ -23,8 +23,10 @@ namespace ioh
                     auto index = 0;
                     const auto c = static_cast<float>(n_queens);
 
-                    if (floor(sqrt(static_cast<double>(meta_data_.n_variables))) != sqrt(static_cast<double>(meta_data_.n_variables)))
-                        common::log::error("Number of parameters in the N Queen problem must be a square number");
+                    if (floor(sqrt(static_cast<double>(meta_data_.n_variables))) != sqrt(static_cast<double>(meta_data_.n_variables))) {
+                        IOH_DBG(error,"Number of parameters in the N Queen problem must be a square number");
+                        assert(floor(sqrt(static_cast<double>(meta_data_.n_variables))) == sqrt(static_cast<double>(meta_data_.n_variables)));
+                    }
 
                     for (; index < meta_data_.n_variables; index++)
                     {

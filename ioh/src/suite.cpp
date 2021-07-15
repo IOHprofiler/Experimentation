@@ -42,15 +42,15 @@ void define_base_class(py::module &m, const std::string &name)
             )pbdoc"
         )
         .def_property_readonly(
-            "instances", &SuiteType::problem_ids,
+            "instances", &SuiteType::instances,
             R"pbdoc(
                 The list of all instance ids contained in the current suite.
             )pbdoc"
         ) //Should this be &SuiteType::instance_ids?
         .def_property_readonly(
-            "name", &SuiteType::problem_ids,
+            "name", &SuiteType::name,
             R"pbdoc(
-                The list of all problems names contained in the current suite.
+                The name of the suite.
             )pbdoc"
         )
         .def("__len__", &SuiteType::size)

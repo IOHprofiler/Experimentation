@@ -77,6 +77,7 @@ namespace ioh
 
         struct MetaData
         {
+            // Most of fields here are `int` and not `unsigned long` (or `size_t`) because of interoperability with some problem suites.
             int instance{};
             int problem_id{};
             std::string name;
@@ -105,6 +106,21 @@ namespace ioh
             {
             }
 
+            bool operator==(const MetaData& other) const
+            {
+                return instance                == other.instance
+                   and problem_id              == other.problem_id
+                   and name                    == other.name
+                   and optimization_type       == other.optimization_type
+                   and n_variables             == other.n_variables
+                   and initial_objective_value == other.initial_objective_value;
+            }
+
+            bool operator!=(const MetaData& other) const
+            {
+                return not (*this == other);
+            }
+
             friend std::ostream &operator<<(std::ostream &os, const MetaData &obj)
             {
                 os << obj.name;
@@ -119,6 +135,7 @@ namespace ioh
                         : "maximization")
                     << " n_variables: " << obj.n_variables;
             }
+            
         };
 
         template <typename T>

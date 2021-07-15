@@ -180,3 +180,7 @@ data/
 
 test.py
 CMakeSettings.json
+.clangd
+compile_commands.json
+debug
+release

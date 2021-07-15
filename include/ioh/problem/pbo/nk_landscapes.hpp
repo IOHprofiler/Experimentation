@@ -21,7 +21,8 @@ namespace ioh
                     k_ = k;
                     if (k > n)
                     {
-                        common::log::error("NK_Landscapes, k > n");
+                        IOH_DBG(error,"NK_Landscapes, k > n");
+                        assert(k<=n);
                     }
                     for (auto i = 0; i != n; ++i)
                     {

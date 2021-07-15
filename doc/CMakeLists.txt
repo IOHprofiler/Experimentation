@@ -20,7 +20,7 @@ add_custom_command(OUTPUT ${DOXYGEN_INDEX_FILE}
                    VERBATIM
                    )
 
-add_custom_target(Doxygen ALL DEPENDS ${DOXYGEN_INDEX_FILE}) 
+add_custom_target(doc ALL DEPENDS ${DOXYGEN_INDEX_FILE}) 
  
 ## Sphinx
 set(SPHINX_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/sphinx)
